@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+@import "tailwindcss";
+@theme{
+  --color-primary: #D90429;
+  --color-primary-dull: #2B2D42;
+  --color-links: #00A8E8
+}
+/* Firefox */
+* {
+  font-family: "Outfit", sans-serif;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(16, 181, 181) transparent;
+}
+
+/* WebKit Browsers (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(249, 249, 23);
+  border-radius: 10px;
+}
+body{
+  color: #fff;
+  background-color: black;
+}
+/* a{
+  color: var(--color-links);
+} */
+ .no-scroolbar{
+  scrollbar-width: none;
+ }
+
+ input::-webkit-inner-spin-button,
+ input::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+ }
+::-webkit-calendar-picker-indicator{
+  filter:invert(1);
+ }
