@@ -5,6 +5,8 @@ import  'dotenv/config';
 import connectDB from './configs/db.js';
 
 import { clerkMiddleware } from '@clerk/express'
+import { serve } from "inngest/express";
+import { inngest, functions } from "./inngest/index.js"
 
 const PORT = 3003;
 const app=express()
@@ -20,6 +22,10 @@ app.use(clerkMiddleware())
 
 // api routes 
 app.get("/" , (req , res)=> res.send('server is live'))
+
+// Set up the "/api/inngest" (recommended) routes with the serve handler
+app.use("/api/inngest", serve({ client: inngest, functions }));
+
  
 
 
