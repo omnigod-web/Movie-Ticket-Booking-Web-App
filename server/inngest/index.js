@@ -7,7 +7,7 @@ export const inngest = new Inngest({ id: "movie-ticket-booking" });
 // inngest function to save user data to a database 
 
 const syncUserCreation=inngest.createFunction(
-    {id:'sync-user-from-cleark'},
+    {id:'sync-user-from-clerk'},
     {event:'clerk/user.created'},
     async({event})=>{
         const{id,first_name , last_name , email_addresses ,image_url} = event.data
@@ -35,7 +35,7 @@ const syncUserDeletion=inngest.createFunction(
 //inngest fn to to update user 
 
 const syncUserUpadation=inngest.createFunction(
-    {id:'update-user-from-cleark'},
+    {id:'update-user-from-clerk'},
     {event:'clerk/user.updated'},
     async({event})=>{
          const{id,first_name , last_name , email_addresses ,image_url} = event.data
