@@ -21,7 +21,7 @@ app.use(cors())
 app.use(clerkMiddleware())
 
 // api routes 
-app.get("/" , (req , res)=> res.send('server is live'))
+app.get("/" , (req , res) => res.send('server is live'))
 
 // Set up the "/api/inngest" (recommended) routes with the serve handler
 app.use("/api/inngest", serve({ client: inngest, functions }));
@@ -32,3 +32,5 @@ app.use("/api/inngest", serve({ client: inngest, functions }));
 app.listen(PORT ,()=>{
     console.log(`you are at at http:// localhost:${PORT}`)
 })
+
+export default app; // ✅ this is required by Vercel
