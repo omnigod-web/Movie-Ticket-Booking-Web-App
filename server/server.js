@@ -11,7 +11,7 @@ import { inngest, functions } from "./inngest/index.js"
 const PORT = 3003;
 const app=express()
 
-// await connectDB()
+await connectDB()
 
 //middleware
 
