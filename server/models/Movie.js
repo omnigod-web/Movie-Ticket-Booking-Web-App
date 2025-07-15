@@ -16,7 +16,10 @@ const movieSchema = new mongoose.Schema(
         vote_avarage:{type:Number ,require:true},
         runtime:{type:Number ,require:true},
 
-    } ,{timestamps:true}               
+    } ,
+    {
+        timestamps:true
+    }               
 )
 
 const Movie = mongoose.model('Movie' , movieSchema)

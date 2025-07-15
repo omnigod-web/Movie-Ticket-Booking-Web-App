@@ -3,6 +3,7 @@ import cors from 'cors'; // ✅ This is correct in ESM
 
 import  'dotenv/config';
 import connectDB from './configs/db.js';
+import morgan from 'morgan';
 
 import { clerkMiddleware } from '@clerk/express'
 import { serve } from "inngest/express";
@@ -16,8 +17,10 @@ await connectDB()
 
 //middleware
 
+
 app.use(express.json())
 app.use(cors())
+app.use(morgan('dev')) // ✅ This is correct in ESM
 
 app.use(clerkMiddleware())
 
