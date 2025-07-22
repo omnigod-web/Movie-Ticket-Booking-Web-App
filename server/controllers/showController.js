@@ -1,6 +1,7 @@
 import axios from "axios"
 import Movie from "../models/Movie.js";
 import Show from "../models/Show.js";
+import { set } from "mongoose";
 
 
 // api to get now  playing movies from TMDB API
@@ -84,5 +85,46 @@ export const addShow= async(req , res)=>{
     } catch (error) {
          console.log(error)
         res.json({success:false ,message: error.message})
+    }
+}
+
+//API TO GET ALL SHOWS FROM THE DB
+
+export const getShows = async (req, res) => {
+    try {
+        const shows = await Show.find({showDateTime: {$gte:new Date()}}).populate('movie').sort({showDateTime: 1});
+
+        //filter unique shows 
+        const uniqueShows = new set(shows.map(show => show.movie))
+        res.json({ success: true, shows : Array.from(uniqueShows) });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+} 
+
+//api to get single show from db
+
+export const getSingleShow = async (req, res) => {
+    try {
+        const { movieId } = req.params;
+        //get all upcomming shows for the movies
+        const shows = await Show.find({movie:movieId, showDateTime: {$gte :new Date() }})
+        const movie = await Movie.findById(movieId);
+        const dateTime ={};
+
+        shows.forEach((show) => {
+            const date = show.showDateTime.toISOString().split('T')[0];
+
+            if (!dateTime[date]) {
+            dateTime[date] = [];
+            }
+        dateTime[date].push({time:show.show.DateTime,showId:show._id})
+        })
+        
+        res.json({ success: true, movie,dateTime })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: error.message });
     }
 }
