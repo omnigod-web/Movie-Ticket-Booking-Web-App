@@ -13,7 +13,7 @@ const movieSchema = new mongoose.Schema(
         tagline:{type : String },
         genres:{type : Array ,require :true },
         casts:{type : Array ,require :true },
-        vote_avarage:{type:Number ,require:true},
+        vote_average:{type:Number ,require:true},
         runtime:{type:Number ,require:true},
 
     } ,

@@ -2,10 +2,14 @@ import React from 'react'
 import {dummyShowsData} from '../assets/assets'
 import MovieCard from '../components/MovieCard'
 import BlurCircle from '../components/BlurCircle'
+import { useAppContext } from '../context/AppContext'
 
 
 const Movies = () => {
-    return dummyShowsData.length > 0 ? (
+
+    const {shows} = useAppContext();
+
+    return shows.length > 0 ? (
         <div className="relative my-40 mb-60  md:px-16 lg:px-40 xl:px-44
             overflow-hidden min-h-[80vh]">
            <BlurCircle top="150px" left="0px" />
@@ -15,7 +19,7 @@ const Movies = () => {
            </h1>
            <div className="flex flex-wrap max-sm:justify-center gap-10 md:gap-4 ">
             {
-            dummyShowsData.map(
+            shows.map(
                 (movie)=> <MovieCard movie={movie} key={movie._id}/>
             )}
            </div>

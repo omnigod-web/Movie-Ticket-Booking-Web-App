@@ -12,7 +12,9 @@ export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
     const [isAdmin ,setIsAdmin] = useState(false);
     const [shows ,setShows] = useState([]);
-    const [favoriteMovies ,setFavoritesMovies] = useState([]);
+    const [favoriteMovies ,setFavoriteMovies] = useState([]);
+
+    const image_base_url = import.meta.env.VITE_TMDB_IMAGE_BASE_URL || 'https://image.tmdb.org/t/p/original';
     const {user}=useUser();
     const {getToken} =useAuth();
     const location=useLocation();
@@ -55,9 +57,11 @@ export const AppProvider = ({ children }) => {
         try {
             const {data} = await axios.get('/api/user/favorites',{
                 headers: { Authorization: `Bearer ${await getToken()}` }
+
             });
             if(data.success){
-                setFavoritesMovies(data.favorites);
+                setFavoriteMovies(data.favourites);
+                console.log('Favorite movies fetched:', data);
             }
             else {
                 toast.error(data.message || 'Failed to fetch favorite movies');
@@ -84,7 +88,7 @@ export const AppProvider = ({ children }) => {
         fetchIsAdmin,
         user,getToken,navigate,isAdmin,shows,
         favoriteMovies,
-        fetchFavoriteMovies
+        fetchFavoriteMovies,image_base_url
     }
 
   return (

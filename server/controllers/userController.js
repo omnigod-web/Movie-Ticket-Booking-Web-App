@@ -34,28 +34,28 @@ export const UpdateFavorite = async (req, res) => {
         const userId = req.auth().userId;
         const { movieId } = req.body;
          const user = await clerkClient.users.getUser(userId)
-         if(!user.privateMetadata.favourites){
-            user.privateMetadata.favourites = [];
+         if(!user.privateMetadata.favorites){
+            user.privateMetadata.favorites = [];
          }
-         if(!user.privateMetadata.favourites.includes(movieId)){
-            user.privateMetadata.favourites.push(movieId);
+         if(!user.privateMetadata.favorites.includes(movieId)){
+            user.privateMetadata.favorites.push(movieId);
          }
          else{
-            user.privateMetadata.favourites = user.privateMetadata.favourites.filter(item => item !== movieId);
+            user.privateMetadata.favorites = user.privateMetadata.favorites.filter(item => item !== movieId);
          }
-         await clerkClient.users.updateUserMetadata(userId, { pruvateMetadata: user.privateMetadata });
+         await clerkClient.users.updateUserMetadata(userId, { privateMetadata: user.privateMetadata });
        
         res.json({
             success: true,
             message: "Favourite movie updated successfully",
-            user: userUpdate
+            
         });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({
+        console.error(error, 'kya yrr ');
+        res.json({
             success: false,
-            message: "Internal Server Error",
+            message: "server ka dikkat",
             error: error.message
         });
     }

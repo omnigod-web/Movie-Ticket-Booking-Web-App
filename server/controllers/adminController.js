@@ -4,6 +4,7 @@
 
 // import { populate } from "dotenv";
 import Booking from "../models/Booking.js";
+import Movie from "../models/Movie.js";
 import Show from "../models/Show.js";
 import User from "../models/User.js";
 
@@ -25,6 +26,8 @@ export const getDashboardData = async (req, res) => {
         totalUser
      }
      res.json({success: true,dashboardData});
+    //  console.log(`movie schema ${Movie}`);
+     
    } catch (error) {
     console.log(error);
     res.json({success: false, message: "Failed to fetch dashboard data"});
@@ -36,11 +39,10 @@ export const getDashboardData = async (req, res) => {
 export const getAllShows = async (req, res) => {
     try {
         const shows = await Show.find({showDateTime:{$gte:new Date()}}).populate('movie').sort({showDateTime: 1});
-
         res.json({ success: true, shows });
     } catch (error) {
         console.log(error);
-        res.json({ success: false, message: "Failed to fetch shows" });
+        res.json({ success: false, message: "Failed to fetch shows byv server " });
     }
 }
 
@@ -54,7 +56,7 @@ export const getAllBookings = async (req, res) => {
         res.json({ success: true, bookings });
     } catch (error) {
         console.log(error);
-        res.json({ success: false, message: "Failed to fetch bookings" });
+        res.json({ success: false, message: "Failed to fetch bookings in server " });
     }
 }
   
