@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { assets, dummyDateTimeData, dummyShowsData } from '../assets/assets'
 import Loading from '../components/Loading'
@@ -6,6 +6,7 @@ import { ArrowRight, ClockIcon } from 'lucide-react'
 import isoTimeFormat from '../assets/lib/isoTimeFormat'
 import BlurCircle from '../components/BlurCircle'
 import toast from 'react-hot-toast'
+import { useAppContext } from '../context/AppContext'
 
 const SeatLayout = () => {
     const groupRows = [['A','B'] , ['C' ,'D'],['E','F'],['G','H'],['I','J']]
@@ -14,17 +15,27 @@ const SeatLayout = () => {
     const [selectedSeats , setselectedSeats] =useState([])
     const [selectedTime , setselectedTime] =useState(null)
     const[show ,setShow]=useState(null)
+    const [occupiedSeats, setOccupiedSeats] = useState([]);
 
     const navigate=useNavigate()
+    const {axios, getToken, user} = useAppContext();
     
     const getShow = async ()=>{
-        const show=dummyShowsData.find(show=>show._id === id)
-        if(show){
-            setShow({
-               movie:show,
-               dateTime: dummyDateTimeData
-            })
-        } 
+        try {
+            const {data} = await axios.get(`/api/show/${id}`, {
+                headers: { Authorization: `Bearer ${await getToken()}` }
+            });
+            if(data.success){
+                setShow(data);
+                console.log('data' , data);
+                
+            } else {
+                toast.error('Failed to fetch show details');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('An error occurred while fetching show details');
+        }
     }
 
      const handleSeatClick=(seatId)=>{
@@ -46,7 +57,8 @@ const SeatLayout = () => {
                     return(
                         <button key={seatId} onClick={()=>handleSeatClick
                             (seatId)} className={`h-8 w-8 rounded border border-primary/60 cursor-pointer 
-                                ${selectedSeats.includes(seatId) &&"bg-primary text-white"}`}>
+                                ${selectedSeats.includes(seatId) &&"bg-primary text-white"}
+                                ${occupiedSeats.includes(seatId) && "bg-gray-400 text-white cursor-not-allowed"}`}>
                                     {seatId}
                         </button>
                     )
@@ -54,9 +66,30 @@ const SeatLayout = () => {
             </div>
        </div> 
     )
+
+    const getOccupiedSeats = async () => {
+        try { 
+            const { data } = await axios.get(`/api/booking/seats/${selectedTime.showId}`)
+            
+            if (data.success) {
+                setOccupiedSeats(data.occupiedSeats);
+            } else {
+                toast.error('Failed to fetch occupied seats' ,data.message);
+            }
+        }catch(error){
+            console.error(error);
+            toast.error('An error occurred while fetching occupied seats');
+        }
+    }
     useEffect(()=>{
       getShow()
     },[])
+
+    useEffect(() => {
+        if (selectedTime) {
+            getOccupiedSeats();
+        }
+        },[selectedTime]);
 
     return show?(
        <div className="flex flex-col md:flex-row px-6 md:px-16 lg:px-40 py-30 md:pt-50">
@@ -69,7 +102,7 @@ const SeatLayout = () => {
             <div className="mt-5 space-y-1">
                 {show.dateTime[date].map((items)=>(
 
-                    <div key={items.time} onClick={()=> setselectedTime(items)} className={`flex items-center gap-2 px-6 py-2 w-max rounded-r-md
+                    <div key={items.id} onClick={()=> setselectedTime(items)} className={`flex items-center gap-2 px-6 py-2 w-max rounded-r-md
                         cursor-pointer transition ${selectedTime?.time ===items.time ? "bg-primary text-white": 'hover:bg-primary/20'}`}>
                         <ClockIcon className='w-5 h-5' />
                         <p className="text-sm">{isoTimeFormat(items.time)}</p>
