@@ -93,7 +93,7 @@ export const addShow= async(req , res)=>{
 
 export const getShows = async (req, res) => {
     try {
-        const shows = await Show.find({showDateTime: {$gte:new Date()}}).populate('movie').sort({showDateTime: 1});
+        const shows = await Show.find({showDateTime: {$lt:new Date()}}).populate('movie').sort({showDateTime: 1});
 
         //filter unique shows 
         const uniqueShows = new Set(shows.map(show => show.movie))
