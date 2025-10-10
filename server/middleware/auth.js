@@ -17,7 +17,7 @@
 //     }
 // }
 
-import { clerkClient } from "@clerk/express";
+import { clerkClient } from "@clerk/express"; //clerk client
 
 export const protectAdmin = async (req, res, next) => {
     try {

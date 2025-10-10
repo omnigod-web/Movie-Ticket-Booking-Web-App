@@ -29,7 +29,7 @@ export const addShow= async(req , res)=>{
         let movie= await Movie.findById(movieId)
         
         if(!movie) {
-            // fetch movie det from tmdb 
+            // fetch movie details from tmdb 
             const [movieDetailsResponse , movieCreditsResponse] =await Promise.all([
                 axios.get(`https://api.themoviedb.org/3/movie/${movieId}`,{
             headers:{Authorization:`Bearer ${process.env.TMDB_API_KEY}`} }) ,
@@ -93,11 +93,14 @@ export const addShow= async(req , res)=>{
 
 export const getShows = async (req, res) => {
     try {
-        const shows = await Show.find({showDateTime: {$lt:new Date()}}).populate('movie').sort({showDateTime: 1});
+        const shows = await Show.find({showDateTime: {$gte:new Date()}}).populate('movie').sort({showDateTime: 1});
 
         //filter unique shows 
         const uniqueShows = new Set(shows.map(show => show.movie))
+
+        
         res.json({ success: true, shows : Array.from(uniqueShows) });
+
     } catch (error) {
         console.error(error);
         res.json({ success: false, message: error.message });
@@ -105,6 +108,40 @@ export const getShows = async (req, res) => {
         
     }
 } 
+//api to get  showPoster from db
+
+export const getShowPoster = async (req, res  ) => {
+    try {
+        // Find active shows (date >= today)
+        const shows = await Show.find({ showDateTime: { $gte: new Date() } })
+            .populate({
+                path: 'movie',  // populate movie details
+                select: 'poster_path backdrop_path title overview runtime genres _id '
+            });
+
+        console.log(shows, "found shows:");
+
+        // Map only the info you want
+        const posters = shows.map(show => ({
+            _id:show.movie._id,
+            poster: show.movie.poster_path,
+            title: show.movie.title,
+            overview: show.movie.overview,
+            runtime: show.movie.runtime,
+            genres: show.movie.genres,
+            showDateTime: show.showDateTime,
+            backdrop_path:show.movie.backdrop_path
+        }));
+        // console.log(posters , "poster");
+        
+
+        res.json(posters); // send to frontend
+        // next();
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
 
 //api to get single show from db
 
@@ -134,3 +171,4 @@ export const getSingleShow = async (req, res) => {
         
     }
 }
+
