@@ -61,8 +61,8 @@ const TrailerSection = () => {
     }
   }, [shows]); // 👈 re-run when IDs change
 
-  // console.log(trailerLink, "TRAILER LINKS MAP");
-    // const Link = Object.values(trailerLink) 
+  console.log(trailerLink, "TRAILER LINKS MAP");
+    const Link = Object.values(trailerLink) 
   
    useEffect(() => {
   if (trailerLink) {

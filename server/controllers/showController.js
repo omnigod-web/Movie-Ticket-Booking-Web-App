@@ -13,7 +13,7 @@ export const getNowPlayingMovies =async(req , res)=>{
         const movies=data.results;
         res.json({success:true , movies:movies})
     } catch (error) {
-        console.log(error)
+        console.log(error.message)
         // console.log('TMDB_API_KEY:', process.env.TMDB_API_KEY);
 
         res.json({success:false ,message: error.message})

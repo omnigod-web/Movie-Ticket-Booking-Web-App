@@ -14,14 +14,34 @@ const MovieDetails = () => {
     const navigate = useNavigate()
     const {id} = useParams()  //use to access url parameter for eg:- humlog url se id le rhe hai eg(url):- http://localhost:5173/movies/324544 use store id- 324544-
     const [Show ,setShow]=useState(null)
+    const [trailer , setTrailer] =useState("")
 
     const {shows , axios, getToken, image_base_url , user , fetchFavoriteMovies , favoriteMovies} = useAppContext();
+    const api_key = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0ZTI3YzQ5NGFlN2I1ZGJiYzE5NTFlNjA0MmI5Mjk1NCIsIm5iZiI6MTczNzk1NTAzMy40NjU5OTk4LCJzdWIiOiI2Nzk3MTZkOTI1ZDI5ODBmYjAyNDA5MTQiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.nKs4OMQBnQkTNqZKPUh5HQGjusZdyAL96bIY_KyUM0c"
 
+    //  let trailer="NULL";  
+     
+    const movieLink=async (data)=>{
+            try{
+            const res= await axios.get(`https://api.themoviedb.org/3/movie/${data.movie._id}/videos`,{
+            headers:{Authorization:`Bearer ${api_key}`} })
+            let trailer = res.data.results.find(
+            (vid) => vid.site === "YouTube"
+            );
+            setTrailer(trailer);
+            // console.log(trailer.key);
+            
+          } catch (error) {
+            console.log(error,`Error fetching link on youtube for: ${data.movie._id}`);
+            
+          }
+          
+    }
      const getShow=async()=>{
         try {
           const {data} = await  axios.get(`/api/show/${id}`)
           console.log(`Fetched show for movie ${id}:`, data);
-          
+          movieLink(data);
           if(data.success){
             setShow(data);
           }
@@ -31,6 +51,9 @@ const MovieDetails = () => {
             toast.error('Failed to fetch show details');
         } 
      }
+       const goToYouTube = () => {
+             window.open(`https://www.youtube.com/watch?v=${trailer.key}`, "_blank");
+            };
 
      const handleFavorite = async () => {
         try { 
@@ -74,7 +97,7 @@ const MovieDetails = () => {
                     {timeFormat(Show.movie.runtime)} * {Show.movie.genres.map(genre=>genre.name).join(", ")} * {Show.movie.release_date.split("-")[0]}
                 </p>
                 <div className="flex flex-row flex-wrap w-auto h-auto items-center gap-4 mt-5">
-                  <button className="flex gap-2 border-2 rounded-3xl  px-3 py-3 items-center bg-primary cursor-pointer transition active:scale-95 hover:bg-primary-dull md:w-40   ">
+                  <button onClick={goToYouTube} className="flex gap-2 border-2 rounded-3xl  px-3 py-3 items-center bg-primary cursor-pointer transition active:scale-95 hover:bg-primary-dull md:w-40   ">
                     <PlayCircleIcon className='w-5 h-5'  />
                       Watch Trailer
                   </button>
