@@ -5,6 +5,7 @@ import BlurCircle from '../components/BlurCircle'
 import timeFormat from '../assets/lib/timeFormat'
 import { dateFormat } from '../assets/lib/dateFormat'
 import { useAppContext } from '../context/AppContext'
+import { Link } from 'react-router-dom'
 
 const MyBookings = () => {
     const { axios, getToken, user , image_base_url } = useAppContext();
@@ -54,7 +55,7 @@ const MyBookings = () => {
                <div className="flex flex-col md:items-end md:text-right justify-between p-4">
                 <div className="items-center flex gap-4">
                     <p className="text-2xl font-semibold mb-3">{currency}{item.amount}</p>
-                    {!item.isPaid && <button className='bg-primary px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer'>Pay now</button>}
+                    {!item.isPaid && <Link to={item.paymentLink} className='bg-primary px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer'>Pay now</Link>}
                     
                 </div>
                 <div className="text-sm">

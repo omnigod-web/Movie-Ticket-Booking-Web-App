@@ -23,8 +23,9 @@ const app=express()
 // stripe webhook Route
 await connectDB()
 
-app.use('/api/stripe',express.raw({type : 'application/jason'}) , stripeWebhooks )
-//middleware
+app.use('/api/stripe',express.raw({type : 'application/json'}) , stripeWebhooks )
+// //middleware
+
 
 
 app.use(express.json())
