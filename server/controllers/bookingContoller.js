@@ -1,6 +1,7 @@
-import { raw } from "express";
+// import { req } from "express";
 import Show from "../models/Show.js";
 import Booking from "../models/Booking.js";
+import stripe from 'stripe' ; 
 
 
 //fn to check availability of seats
@@ -22,34 +23,61 @@ export const checkSeatAvailability = async (showId , selectedSeats) => {
 export const createBooking = async (req, res) => {
     try {
         const { userId} = req.auth();
-        const {showId,selectedSeats}=raw.body
+        const {showId,selectedSeats}=req.body
         const {origin} = req.headers;
 
         //check if the seat is available
         const isAvailable = await checkSeatAvailability(showId, selectedSeats);
-
+        console.log(isAvailable);
+        
         if (!isAvailable) {
             return res.status(400).json({ success: false, message: "Selected seats are not available" });
         }
         //get the show details
         const showData=await Show.findById(showId).populate('movie');
         //create booking
-        const booking = new Booking({
+        const booking = await Booking.create({
             user: userId,
             show: showId,
             amount: showData.showPrice * selectedSeats.length,
             bookedSeats: selectedSeats
         });
          selectedSeats.map((seat) => {
-            booking.occupiedSeats[seat] = userId; //mark seat as occupied)
+            showData.occupiedSeats[seat] = userId; //mark seat as occupied)
          })
 
          showData.markModified('occupiedSeats');
             await showData.save();
 
          //   stripe Gateway integration
+              const stripeInstance= new stripe(process.env.STRIPE_SECRET_KEY)
+        // creating line items for stripe 
+        const line_items = [{
+            price_data :{
+                currency : 'aud' , 
+                product_data : {
+                    name : showData.movie.title
+                },
+                unit_amount : Math.floor(booking.amount)*100
+            },
+            quantity : 1
+        }]
 
-         res.json({sucess:true, message:"Booking created successfully"});
+        const session =await stripeInstance.checkout.sessions.create({
+            success_url:`${origin}/loading/my-bookings`, 
+            cancel_url: `${origin}/my-bookings`,
+            line_items:line_items,
+            mode:'payment',
+            metadata:{
+                bookingId: booking._id.toString()
+            },
+            expires_at : Math.floor(Date.now()/1000) + 30 * 60 //Expires in 30 mins
+        })
+
+        booking.paymentLink= session.url  
+        await booking.save()    //will save payment link in db so that user can retry booking payments 
+        
+         res.json({success:true, url: session.url});
 
       
     } catch (error) {

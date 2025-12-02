@@ -85,6 +85,23 @@ const SeatLayout = () => {
       getShow()
     },[])
 
+    const bookTickets = async ()=>{
+        try {
+            if(!user) return toast.error("LogIN fisrt to procees")
+                if(!selectedTime || !selectedSeats) return toast.error('select data and time')
+                    const {data} = await axios.post('/api/booking/create' , {showId:selectedTime.showId , selectedSeats} , {headers:{
+                Authorization:`Bearer ${await getToken()}`
+                }})
+                if(data.success){
+                    window.location.href=data.url;
+                }else{
+                    toast.error(data.massage)
+                }
+        } catch (error) {
+            toast.error(error.message);
+        }
+    }
+
     useEffect(() => {
         if (selectedTime) {
             getOccupiedSeats();
@@ -135,7 +152,7 @@ const SeatLayout = () => {
             </div>
          </div>
 
-        <button onClick={()=> navigate('/my-bookings')} className="flex items-center gap-1 mt-20 px-10 py-3 text-sm bg-primary hove:bg-primary-dull transition rounded-full
+        <button onClick={bookTickets} className="flex items-center gap-1 mt-20 px-10 py-3 text-sm bg-primary hove:bg-primary-dull transition rounded-full
         font-medium cursor-pointer active:scale-95">
             Proceed to checkout
             <ArrowRight strokeWidth={3}className='w-5 h-5' />

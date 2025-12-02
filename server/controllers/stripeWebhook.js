@@ -1,0 +1,39 @@
+import Stripe from "stripe";
+import Booking from "../models/Booking.js";
+
+export const stripeWebhooks =async (req , res)=>{
+    const stripeInstance = new stripeWebhooks(process.env.STRIPE_SECRET_KEY);
+    const sig =req.headers['stripe-signature'];
+
+    let event;
+    try {
+        event = stripeInstance.webhooks.constructEvent(req.body , sig , process.env.STRIPE_WEBHOOK_KEY)
+    } catch (e) {
+        return res.status(400).send(`webhook Error: ${e.message}`)
+    }
+
+    try {
+        switch(event.type){
+            case 'payment_intent_succeeded' : {
+                const paymentIntent = event.data.Object;
+                const sessionList = await stripeInstance.checkout.session.list({
+                    payment_intent:paymentIntent.id
+                })
+                const session = session.data[0];
+                const {bookingId} = session.metadata;
+                await Booking.findByIdAndUpdate(bookingId ,{
+                    isPaid : true,
+                    paymentLink:""
+                })
+                break;
+            }
+            default:
+                console.log('Unhandled event tyope' ,  event.type);
+                
+        }
+        res.json({recieved:true})
+    } catch (error) {
+        console.log('webhook processing error' , error);
+        res.status(500).send('INTERNL SERVER ERROR')
+    }
+}

@@ -16,12 +16,14 @@ import showRouter from './routes/showRoutes.js';
 import bookingRouter from './routes/bookingRoutes.js';
 import adminRouter from './routes/adminRoutes.js';
 import userRouter from './routes/userRoutes.js';
+import { stripeWebhooks } from './controllers/stripeWebhook.js';
 
 const PORT = 3003;
 const app=express()
-
+// stripe webhook Route
 await connectDB()
 
+app.use('/api/stripe',express.raw({type : 'application/jason'}) , stripeWebhooks )
 //middleware
 
 

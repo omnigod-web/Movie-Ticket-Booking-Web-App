@@ -4,7 +4,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "dev-server":"node --watch server.js",
+    "dev-server": "node --watch server.js",
     "server": "nodemon server.js",
     "start": "node server.js"
   },
@@ -20,7 +20,9 @@
     "express": "^5.1.0",
     "inngest": "^3.40.0",
     "mongoose": "^8.16.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "stripe": "^20.0.0",
+    "svix": "^1.81.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
