@@ -35,9 +35,9 @@ export const stripeWebhooks = async (req , res)=>{
                 console.log('Unhandled event tyope' ,  event.type);
                 
         }
-        res.json({recieved:true})
+        res.json({received:true})
     } catch (error) {
         console.log('webhook processing error' , error);
-        res.status(500).send('INTERNL SERVER ERROR')
+        res.status(500).send('internal server error')
     }
 }
