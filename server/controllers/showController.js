@@ -3,6 +3,11 @@ import Movie from "../models/Movie.js";
 import Show from "../models/Show.js";
 
 
+import OpenAI from "openai";
+const client = new OpenAI({
+  apiKey: process.env.OPEN_AI_KEY
+});
+
 
 // api to get now  playing movies from TMDB API
 export const getNowPlayingMovies =async(req , res)=>{
@@ -171,4 +176,40 @@ export const getSingleShow = async (req, res) => {
         
     }
 }
+
+export const getMovieInsights = async (req, res) => {
+  try {
+    const { movieTitle } = req.body;
+    
+    if (!movieTitle) {
+      return res.status(400).json({ message: 'Movie title is required' });
+    }
+
+    const response = await client.chat.completions.create({
+      model: "gpt-4o-mini", // Use gpt-4o-mini or gpt-4o (gpt-5 doesn't exist)
+      messages: [
+        {
+          role: "user",
+          content: `Provide detailed insights about the movie "${movieTitle}" in a simple paragraph format. Include information about the plot, themes, critical reception, and cultural impact.`
+        }
+      ],
+      max_tokens: 500,
+      temperature: 0.7
+    });
+
+    const insights = response.choices[0].message.content;
+    
+    res.status(200).json({ 
+      insights: insights,
+      movie: movieTitle 
+    });
+
+  } catch (error) {
+    console.error('Error getting movie insights:', error.message);
+    res.status(500).json({ 
+      message: 'Failed to get movie insights',
+      error: error.message 
+    });
+  }
+};
 

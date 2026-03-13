@@ -1,5 +1,5 @@
 import express from "express"
-import { addShow, getNowPlayingMovies, getShowPoster, getShows, getSingleShow } from "../controllers/showController.js";
+import { addShow, getMovieInsights, getNowPlayingMovies, getShowPoster, getShows, getSingleShow } from "../controllers/showController.js";
 import { protectAdmin } from "../middleware/auth.js";
 
 const showRouter =express.Router();
@@ -11,5 +11,6 @@ showRouter.post('/add', protectAdmin, addShow)
 showRouter.get('/all', getShows)
 // showRouter.get("/moviePoster" , getShowPoster )
 showRouter.get('/:movieId', getSingleShow)
+showRouter.post('/movie/insight' , getMovieInsights)
 
 export default showRouter

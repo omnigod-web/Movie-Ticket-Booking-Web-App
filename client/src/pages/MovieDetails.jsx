@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 // import { dummyDateTimeData, dummyShowsData } from '../assets/assets'
 import BlurCircle from '../components/BlurCircle'
-import { Heart, PlayCircleIcon, StarIcon } from 'lucide-react'
+import { AreaChartIcon, Heart, PlayCircleIcon, StarIcon } from 'lucide-react'
 import timeFormat from '../assets/lib/timeFormat'
 import DateSelect from '../components/DateSelect'
 import MovieCard from '../components/MovieCard'
@@ -104,6 +104,10 @@ const MovieDetails = () => {
                   <a href="#dateSelect" className="flex gap-2 border-2 rounded-3xl  px-3 py-3 items-center bg-primary transition active:scale-95 hover:bg-primary-dull  ">
                     Buy Tickets 
                   </a>
+                  <button onClick={() => navigate(`/theater/${id}`)} className="flex gap-2 border-2 rounded-3xl  px-3 py-3 items-center bg-primary cursor-pointer transition active:scale-95 hover:bg-primary-dull md:w-40   ">
+                    < AreaChartIcon className='w-5 h-5'  />
+                      AI INSIGHTS
+                  </button>
                   <button onClick={handleFavorite} className="cursor-pointer bg-gray-700 p-2.5 rounded-full transition active:scale-95">
                     <Heart className={`w-5 h-5 ${favoriteMovies.find(movie=> movie._id=== id)? 'fill-primary text-primary ' : ' ' }`}   />
                   </button>

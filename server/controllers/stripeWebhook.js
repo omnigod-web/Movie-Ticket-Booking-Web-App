@@ -20,7 +20,10 @@ export const stripeWebhooks = async (req , res)=>{
                 const sessionList = await stripeInstance.checkout.sessions.list({
                     payment_intent:paymentIntent.id
                 })
+                
                 const session = sessionList.data[0];
+                console.log(session , `Session list data on event${event.type} `);
+                
                 const {bookingId} = session.metadata;
                 await Booking.findByIdAndUpdate(bookingId ,{
                     isPaid :true,

@@ -17,6 +17,7 @@ import ListBookings from './pages/Admin/ListBookings';
 import { useAppContext } from './context/AppContext';
 import { SignIn } from '@clerk/clerk-react';
 import Loading from './components/Loading';
+import Theater from './pages/Theater';
 
 // import HeroSection from './components/HeroSection';
 const App = () => {
@@ -36,6 +37,7 @@ const App = () => {
         <Route path='/my-bookings' element={<MyBookings />} />
          <Route path='/loading/:nextUrl' element={<Loading />} />
         <Route path='/favorite' element={<Favorite />} />
+        <Route path='/theater/:id' element={<Theater />} />  
         <Route path='/admin/*' element={ user?<Layout />:(
       
           <div className='min-h-screen flex items-center justify-center'>
